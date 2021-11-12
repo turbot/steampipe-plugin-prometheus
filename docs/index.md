@@ -2,7 +2,7 @@
 organization: Turbot
 category: ["software development"]
 icon_url: "/images/plugins/turbot/prometheus.svg"
-brand_color: "#00b050"
+brand_color: "#E6522C"
 display_name: "Prometheus"
 short_name: "prometheus"
 description: "Steampipe plugin to query metrics, labels, alerts and more from Prometheus."
