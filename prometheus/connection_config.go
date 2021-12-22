@@ -6,12 +6,17 @@ import (
 )
 
 type prometheusConfig struct {
-	Address *string `cty:"address"`
+	Address *string  `cty:"address"`
+	Metrics []string `cty:"metrics"`
 }
 
 var ConfigSchema = map[string]*schema.Attribute{
 	"address": {
 		Type: schema.TypeString,
+	},
+	"metrics": {
+		Type: schema.TypeList,
+		Elem: &schema.Attribute{Type: schema.TypeString},
 	},
 }
 
