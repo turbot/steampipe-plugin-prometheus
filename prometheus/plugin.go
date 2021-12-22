@@ -2,6 +2,7 @@ package prometheus
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"path/filepath"
@@ -79,7 +80,8 @@ func metricNameList(ctx context.Context, p *plugin.Plugin) ([]string, error) {
 					plugin.Logger(ctx).Error("prometheus.metricNameList", "config_error", "A metric name must have at least one non-empty matcher")
 					return nil, errors.New("A metric name must have at least one non-empty matcher")
 				}
-				q = append(q, fmt.Sprintf("{__name__=~\"%s\"}", metric))
+				s, _ := json.Marshal(metric)
+				q = append(q, fmt.Sprintf("{__name__=~%s}", s))
 			}
 		}
 	}
