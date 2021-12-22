@@ -2,6 +2,8 @@ package prometheus
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"path/filepath"
 	"time"
 
@@ -66,6 +68,22 @@ func metricNameList(ctx context.Context, p *plugin.Plugin) ([]string, error) {
 	startTime := time.Now().Add(-time.Hour)
 	endTime := time.Now()
 	q := []string{}
+
+	// Access config to get the list of metrics to be queried
+	prometheusConfig := GetConfig(p.Connection)
+	if &prometheusConfig != nil {
+		if prometheusConfig.Metrics != nil {
+			metrics := prometheusConfig.Metrics
+			for _, metric := range metrics {
+				if metric == "" {
+					plugin.Logger(ctx).Error("prometheus.metricNameList", "config_error", "A metric name must have at least one non-empty")
+					return nil, errors.New("A metric name must have at least one non-empty matcher")
+				}
+				q = append(q, fmt.Sprintf("{__name__=~\"%s\"}", metric))
+			}
+		}
+	}
+
 	result, warnings, err := conn.LabelValues(ctx, "__name__", q, startTime, endTime)
 	if err != nil {
 		plugin.Logger(ctx).Error("prometheus.metricNameList", "query_error", err)
