@@ -76,7 +76,7 @@ func metricNameList(ctx context.Context, p *plugin.Plugin) ([]string, error) {
 			metrics := prometheusConfig.Metrics
 			for _, metric := range metrics {
 				if metric == "" {
-					plugin.Logger(ctx).Error("prometheus.metricNameList", "config_error", "A metric name must have at least one non-empty")
+					plugin.Logger(ctx).Error("prometheus.metricNameList", "config_error", "A metric name must have at least one non-empty matcher")
 					return nil, errors.New("A metric name must have at least one non-empty matcher")
 				}
 				q = append(q, fmt.Sprintf("{__name__=~\"%s\"}", metric))

@@ -35,7 +35,7 @@ func connectRaw(_ context.Context, cm *connection.Manager, c *plugin.Connection)
 	// Error if the minimum config is not set
 	if address == "" {
 		// Panic since we cannot create a valid empty API to return
-		panic("address must be configured")
+		panic("Prometheus server address must be configured!")
 	}
 
 	client, err := api.NewClient(api.Config{
