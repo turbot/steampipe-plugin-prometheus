@@ -46,7 +46,8 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 	for _, i := range metricNames {
 		tableCtx := context.WithValue(ctx, "metric_name", i)
 		base := filepath.Base(i)
-		tableName := base[0 : len(base)-len(filepath.Ext(base))]
+		// Add a "prometheus_" prefix to the table names to denote that they belong to the prometheus plugin
+		tableName := fmt.Sprintf("prometheus_%s", base[0:len(base)-len(filepath.Ext(base))])
 		// Add the table if it does not already exist, ensuring standard tables win
 		if tables[tableName] == nil {
 			tables[tableName] = tableDynamicMetric(tableCtx, p)
