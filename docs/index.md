@@ -113,7 +113,7 @@ connection "prometheus" {
 
 In the above example, tables will be created for the metrics `prometheus_target_interval_length_seconds` and `http_requests` apart from the tables already defined in the plugin.
 
-Also each metric supports wildcard matching e.g. if we want to create dynamic tables for all metrics starting with `http_requests_`:
+Also each metric supports regular expressions e.g. if we want to create dynamic tables for all metrics starting with `http_requests_`:
 
 ```hcl
 connection "prometheus" {
