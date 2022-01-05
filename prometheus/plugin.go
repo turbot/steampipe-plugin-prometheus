@@ -84,6 +84,9 @@ func metricNameList(ctx context.Context, p *plugin.Plugin) ([]string, error) {
 				s, _ := json.Marshal(metric)
 				q = append(q, fmt.Sprintf("{__name__=~%s}", s))
 			}
+		} else {
+			// If metrics are not configured, we will not be creating any dynamic tables
+			return nil, nil
 		}
 	}
 
