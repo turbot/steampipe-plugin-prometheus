@@ -25,9 +25,6 @@ This plugin will automatically create a table called `prometheus_http_requests_t
 +----------------------+-------+------+----------------------------+----------------+------------+--------------+
 ```
 
-Notes:
-* The default value for `step_seconds` is 60.
-
 ## Examples
 
 ### Inspect the table structure

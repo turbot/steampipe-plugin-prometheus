@@ -103,18 +103,10 @@ func listMetricWithName(metricName string) func(ctx context.Context, d *plugin.Q
 			return nil, err
 		}
 
-		// Default to a 1 minute step interval. Only used if the timestamps create a range.
-		stepSeconds := int64(60)
-		// But allow it to be changed by the query
-		if d.Quals["step_seconds"] != nil {
-			stepSeconds = d.KeyColumnQuals["step_seconds"].GetInt64Value()
-		}
-
 		// Query parameters. Default to results from the current point in time only.
 		r := v1.Range{
 			Start: time.Now(),
 			End:   time.Now(),
-			Step:  time.Second * time.Duration(stepSeconds),
 		}
 
 		// Allow the query to set a range to get values over time
@@ -134,8 +126,14 @@ func listMetricWithName(metricName string) func(ctx context.Context, d *plugin.Q
 					r.End = ts
 				}
 			}
+			r.Step = (r.End.Sub(r.Start) / 1000).Round(time.Second)
 		} else {
 			isRange = false
+		}
+
+		// Allow user to change by the query
+		if d.Quals["step_seconds"] != nil {
+			r.Step = time.Second * time.Duration(d.KeyColumnQuals["step_seconds"].GetInt64Value())
 		}
 
 		// Always filter results to the specific metric
@@ -193,18 +191,18 @@ func listMetricWithName(metricName string) func(ctx context.Context, d *plugin.Q
 				plugin.Logger(ctx).Error("prometheus_query.listMetricWithName", "query_error", err)
 				return nil, err
 			}
-			switch result.(type) {
+			switch result := result.(type) {
 			case model.Vector:
 				{
 					// Stream the results
-					for _, i := range result.(model.Vector) {
+					for _, i := range result {
 						d.StreamListItem(ctx, i)
 					}
 				}
 			case model.Matrix:
 				{
 					// Stream the results
-					for _, i := range result.(model.Matrix) {
+					for _, i := range result {
 						for _, v := range i.Values {
 							row := model.Sample{
 								Metric:    i.Metric,

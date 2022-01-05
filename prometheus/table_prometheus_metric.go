@@ -32,7 +32,7 @@ func tablePrometheusMetric(ctx context.Context) *plugin.Table {
 			// Other columns
 			{Name: "labels", Type: proto.ColumnType_JSON, Transform: transform.FromField("Metric"), Description: "Labels for the metric."},
 			{Name: "query", Type: proto.ColumnType_STRING, Transform: transform.FromQual("query"), Description: "Query used to filter the metric data."},
-			{Name: "step_seconds", Type: proto.ColumnType_INT, Transform: transform.FromQual("step_seconds").Transform(getStepSeconds), Description: "Interval in seconds between metric values. Default 60 seconds."},
+			{Name: "step_seconds", Type: proto.ColumnType_INT, Transform: transform.FromQual("step_seconds").Transform(getStepSeconds), Description: "Interval in seconds between metric values."},
 		},
 	}
 }
@@ -45,18 +45,10 @@ func listMetric(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 		return nil, err
 	}
 
-	// Default to a 1 minute step interval. Only used if the timestamps create a range.
-	stepSeconds := int64(60)
-	// But allow it to be changed by the query
-	if d.KeyColumnQuals["step_seconds"] != nil {
-		stepSeconds = d.KeyColumnQuals["step_seconds"].GetInt64Value()
-	}
-
 	// Query parameters. Default to results from the current point in time only.
 	r := v1.Range{
 		Start: time.Now(),
 		End:   time.Now(),
-		Step:  time.Second * time.Duration(stepSeconds),
 	}
 
 	// Allow the query to set a range to get values over time
@@ -76,8 +68,14 @@ func listMetric(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 				r.End = ts
 			}
 		}
+		r.Step = (r.End.Sub(r.Start) / 1000).Round(time.Second)
 	} else {
 		isRange = false
+	}
+
+	// Allow user to change by the query
+	if d.Quals["step_seconds"] != nil {
+		r.Step = time.Second * time.Duration(d.KeyColumnQuals["step_seconds"].GetInt64Value())
 	}
 
 	// Get the query (required)
@@ -119,18 +117,18 @@ func listMetric(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 			plugin.Logger(ctx).Error("prometheus_query.listMetric", "query_error", err)
 			return nil, err
 		}
-		switch result.(type) {
+		switch result := result.(type) {
 		case model.Vector:
 			{
 				// Stream the results
-				for _, i := range result.(model.Vector) {
+				for _, i := range result {
 					d.StreamListItem(ctx, i)
 				}
 			}
 		case model.Matrix:
 			{
 				// Stream the results
-				for _, i := range result.(model.Matrix) {
+				for _, i := range result {
 					for _, v := range i.Values {
 						row := model.Sample{
 							Metric:    i.Metric,
@@ -159,8 +157,22 @@ func getMetricNameFromMetric(_ context.Context, d *transform.TransformData) (int
 }
 
 func getStepSeconds(_ context.Context, d *transform.TransformData) (interface{}, error) {
-	if d.Value == nil {
-		return int64(60), nil
+	start := time.Now()
+	end := time.Now()
+	step := int64(1)
+
+	if d.KeyColumnQuals["timestamp"] != nil {
+		for _, tq := range d.KeyColumnQuals["timestamp"] {
+			ts := tq.Value.GetTimestampValue().AsTime()
+			switch tq.Operator {
+			case ">", ">=":
+				start = ts
+			case "<=", "<":
+				end = ts
+			}
+		}
+		step = int64((end.Sub(start) / 1000).Round(time.Second) / time.Second)
 	}
-	return d.Value.(int64), nil
+
+	return step, nil
 }

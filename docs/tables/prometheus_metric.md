@@ -3,8 +3,8 @@
 List metric values for a query and time range.
 
 Notes:
+
 * A `query` must be provided in all queries to this table.
-* The default value for `step_seconds` is 60.
 
 ## Examples
 
