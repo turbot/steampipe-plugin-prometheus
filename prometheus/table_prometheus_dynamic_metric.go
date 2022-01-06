@@ -84,7 +84,7 @@ func tableDynamicMetric(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 	cols = append(cols, &plugin.Column{Name: "step_seconds", Type: proto.ColumnType_INT, Transform: transform.FromQual("step_seconds").Transform(getStepSeconds), Description: "Interval in seconds between metric values. Default 60 seconds."})
 
 	return &plugin.Table{
-		Name:        fmt.Sprintf("prometheus_%s", metricName),
+		Name:        metricName,
 		Description: fmt.Sprintf("Metrics for %s.", metricName),
 		List: &plugin.ListConfig{
 			KeyColumns: keyColumns,
