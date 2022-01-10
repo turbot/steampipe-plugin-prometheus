@@ -68,7 +68,7 @@ func listMetric(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 				r.End = ts
 			}
 		}
-		r.Step = (r.End.Sub(r.Start) / 1000).Round(time.Second)
+		r.Step = (r.End.Sub(r.Start)/1000 + time.Second/2).Round(time.Second)
 	} else {
 		isRange = false
 	}
@@ -171,7 +171,7 @@ func getStepSeconds(_ context.Context, d *transform.TransformData) (interface{},
 				end = ts
 			}
 		}
-		step = int64((end.Sub(start) / 1000).Round(time.Second) / time.Second)
+		step = int64((end.Sub(start)/1000 + time.Second/2).Round(time.Second) / time.Second)
 	}
 
 	return step, nil

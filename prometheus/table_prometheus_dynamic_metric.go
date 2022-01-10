@@ -126,7 +126,7 @@ func listMetricWithName(metricName string) func(ctx context.Context, d *plugin.Q
 					r.End = ts
 				}
 			}
-			r.Step = (r.End.Sub(r.Start) / 1000).Round(time.Second)
+			r.Step = (r.End.Sub(r.Start)/1000 + time.Second/2).Round(time.Second)
 		} else {
 			isRange = false
 		}
