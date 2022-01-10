@@ -87,10 +87,12 @@ Installing the latest prometheus plugin will create a config file (`~/.steampipe
 connection "prometheus" {
   plugin = "prometheus"
   address = "http://localhost:9090"
+  metrics = ["prometheus_http_requests_.*", ".*error.*"]
 }
 ```
 
 - `address` - HTTP address of your prometheus server
+- `metrics` - List of metric expressions to be matched against while creating dynamic metric tables
 
 ## Get involved
 
