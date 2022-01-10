@@ -13,6 +13,15 @@ For instance, given the metric:
 }
 ```
 
+And the connection configuration:
+```hcl
+connection "prometheus" {
+  plugin = "prometheus"
+  address = "http://localhost:9090"
+  metrics = ["prometheus_http_requests_total"]
+}
+```
+
 This plugin will automatically create a table called `prometheus_http_requests_total`:
 ```
 > select * from prometheus_http_requests_total;
@@ -25,6 +34,31 @@ This plugin will automatically create a table called `prometheus_http_requests_t
 +----------------------+-------+------+----------------------------+----------------+------------+--------------+
 ```
 
+Regular expressions can also be used to match metric names. For instance, if
+you want to create tables for all metrics starting with
+`prometheus_target_`, use the following configuration:
+
+```hcl
+connection "prometheus" {
+  plugin = "prometheus"
+  address = "http://localhost:9090"
+  metrics = ["prometheus_target_.*"]
+}
+```
+
+If you want to create tables for all metrics, use:
+
+```hcl
+connection "prometheus" {
+  plugin = "prometheus"
+  address = "http://localhost:9090"
+  metrics = [".+"]
+}
+```
+
+However, please note that this could be slow depending on how many metrics are
+in your environment.
+
 Notes:
 * The default value for `step_seconds` is 60.
 
@@ -32,7 +66,16 @@ Notes:
 
 ### Inspect the table structure
 
-Assuming your connection is called `prometheus` (the default), list all tables with:
+Assuming your connection configuration is:
+```hcl
+connection "prometheus" {
+  plugin = "prometheus"
+  address = "http://localhost:9090"
+  metrics = ["prometheus_http_requests_total"]
+}
+```
+
+List all tables with:
 ```sql
 .inspect prometheus
 +--------------------------------+---------------------------------------------------+

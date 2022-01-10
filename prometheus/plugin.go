@@ -2,10 +2,8 @@ package prometheus
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
-	"fmt"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
@@ -38,7 +36,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		"prometheus_target":     tablePrometheusTarget(ctx),
 	}
 
-	// Search for CSV files to create as tables
+	// Search for metrics to create as tables
 	metricNames, err := metricNameList(ctx, p)
 	if err != nil {
 		return nil, err
@@ -59,6 +57,18 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 }
 
 func metricNameList(ctx context.Context, p *plugin.Plugin) ([]string, error) {
+	startTime := time.Now().Add(-time.Hour)
+	endTime := time.Now()
+
+	// Get list of metrics to create tables for from config
+	prometheusConfig := GetConfig(p.Connection)
+	if &prometheusConfig == nil || prometheusConfig.Metrics == nil {
+		return []string{}, nil
+	}
+
+	metrics := prometheusConfig.Metrics
+	q := "{__name__=~\"" + strings.Join(metrics, "|") + "\"}"
+	matches := []string{q}
 
 	conn, err := connectRaw(ctx, p.ConnectionManager, p.Connection)
 	if err != nil {
@@ -66,30 +76,7 @@ func metricNameList(ctx context.Context, p *plugin.Plugin) ([]string, error) {
 		return nil, err
 	}
 
-	startTime := time.Now().Add(-time.Hour)
-	endTime := time.Now()
-	q := []string{}
-
-	// Access config to get the list of metrics to be queried
-	prometheusConfig := GetConfig(p.Connection)
-	if &prometheusConfig != nil {
-		if prometheusConfig.Metrics != nil {
-			metrics := prometheusConfig.Metrics
-			for _, metric := range metrics {
-				if metric == "" {
-					plugin.Logger(ctx).Error("prometheus.metricNameList", "config_error", "A metric name must have at least one non-empty matcher")
-					return nil, errors.New("A metric name must have at least one non-empty matcher")
-				}
-				s, _ := json.Marshal(metric)
-				q = append(q, fmt.Sprintf("{__name__=~%s}", s))
-			}
-		} else {
-			// If metrics are not configured, we will not be creating any dynamic tables
-			return nil, nil
-		}
-	}
-
-	result, warnings, err := conn.LabelValues(ctx, "__name__", q, startTime, endTime)
+	result, warnings, err := conn.LabelValues(ctx, "__name__", matches, startTime, endTime)
 	if err != nil {
 		plugin.Logger(ctx).Error("prometheus.metricNameList", "query_error", err)
 		return nil, err

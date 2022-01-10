@@ -87,40 +87,14 @@ Installing the latest prometheus plugin will create a config file (`~/.steampipe
 connection "prometheus" {
   plugin = "prometheus"
   address = "http://localhost:9090"
-  metrics = ["http_requests_.*", ".*error.*"]
+  metrics = ["prometheus_http_requests_.*", ".*error.*"]
 }
 ```
 
 - `address` - HTTP address of your prometheus server
-- `metrics` - List of metric expressions to be matched against while creating dynamic tables
+- `metrics` - List of metric expressions to be matched against while creating dynamic metric tables
 
 ## Get involved
 
 - Open source: https://github.com/turbot/steampipe-plugin-prometheus
 - Community: [Slack Channel](https://steampipe.io/community/join)
-
-## Metric Filtering
-
-By default, the prometheus plugin will pull in all available metrics from the target address which can cause timeout/performance issues. The `metrics` configuration parameter will come in handy in such a situation:
-
-```hcl
-connection "prometheus" {
-  plugin = "prometheus"
-  address = "http://localhost:9090"
-  metrics = ["prometheus_target_interval_length_seconds", "http_requests"]
-}
-```
-
-In the above example, tables will be created for the metrics `prometheus_target_interval_length_seconds` and `http_requests` apart from the tables already defined in the plugin.
-
-Also each metric supports regular expressions e.g. if we want to create dynamic tables for all metrics starting with `http_requests_`:
-
-```hcl
-connection "prometheus" {
-  plugin = "prometheus"
-  address = "http://localhost:9090"
-  metrics = ["http_requests_.*"]
-}
-```
-
-Refer https://prometheus.io/docs/prometheus/latest/querying/basics/ on additional information about how to filter metrics.
