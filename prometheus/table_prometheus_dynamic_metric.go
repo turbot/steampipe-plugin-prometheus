@@ -126,12 +126,17 @@ func listMetricWithName(metricName string) func(ctx context.Context, d *plugin.Q
 					r.End = ts
 				}
 			}
-			r.Step = (r.End.Sub(r.Start)/1000 + time.Second/2).Round(time.Second)
+			stepSeconds := (r.End.Sub(r.Start) / 1000).Round(time.Second)
+			// Step has to be higher than 0 seconds
+			if stepSeconds < 1 {
+				stepSeconds = time.Second
+			}
+			r.Step = stepSeconds
 		} else {
 			isRange = false
 		}
 
-		// Allow user to change by the query
+		// Allow user to change in the query
 		if d.Quals["step_seconds"] != nil {
 			r.Step = time.Second * time.Duration(d.KeyColumnQuals["step_seconds"].GetInt64Value())
 		}

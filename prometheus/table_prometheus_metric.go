@@ -68,12 +68,17 @@ func listMetric(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 				r.End = ts
 			}
 		}
-		r.Step = (r.End.Sub(r.Start)/1000 + time.Second/2).Round(time.Second)
+		stepSeconds := (r.End.Sub(r.Start) / 1000).Round(time.Second)
+		// Step has to be higher than 0 seconds
+		if stepSeconds < 1 {
+			stepSeconds = time.Second
+		}
+		r.Step = stepSeconds
 	} else {
 		isRange = false
 	}
 
-	// Allow user to change by the query
+	// Allow user to change in the query
 	if d.Quals["step_seconds"] != nil {
 		r.Step = time.Second * time.Duration(d.KeyColumnQuals["step_seconds"].GetInt64Value())
 	}
@@ -157,6 +162,12 @@ func getMetricNameFromMetric(_ context.Context, d *transform.TransformData) (int
 }
 
 func getStepSeconds(_ context.Context, d *transform.TransformData) (interface{}, error) {
+	// Use the qual value if specified
+	if d.Value != nil {
+		return d.Value.(int64), nil
+	}
+
+	// Else calculate based on a time range (if available) or default to 1 second
 	start := time.Now()
 	end := time.Now()
 	step := int64(1)
@@ -171,7 +182,12 @@ func getStepSeconds(_ context.Context, d *transform.TransformData) (interface{},
 				end = ts
 			}
 		}
-		step = int64((end.Sub(start)/1000 + time.Second/2).Round(time.Second) / time.Second)
+		stepSeconds := (end.Sub(start) / 1000).Round(time.Second)
+		// Step has to be higher than 0 seconds
+		if stepSeconds < 1 {
+			stepSeconds = time.Second
+		}
+		step = int64(stepSeconds.Seconds())
 	}
 
 	return step, nil
