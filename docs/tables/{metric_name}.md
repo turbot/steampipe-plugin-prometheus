@@ -59,9 +59,6 @@ connection "prometheus" {
 However, please note that this could be slow depending on how many metrics are
 in your environment.
 
-Notes:
-* The default value for `step_seconds` is 60.
-
 ## Examples
 
 ### Inspect the table structure
