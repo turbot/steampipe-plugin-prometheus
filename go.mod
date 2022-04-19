@@ -1,6 +1,6 @@
 module github.com/turbot/steampipe-plugin-prometheus
 
-go 1.16
+go 1.18
 
 require (
 	github.com/prometheus/client_golang v1.11.0
