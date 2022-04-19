@@ -26,10 +26,8 @@ func connectRaw(_ context.Context, cm *connection.Manager, c *plugin.Connection)
 
 	// Prefer config settings
 	prometheusConfig := GetConfig(c)
-	if &prometheusConfig != nil {
-		if prometheusConfig.Address != nil {
-			address = *prometheusConfig.Address
-		}
+	if prometheusConfig.Address != nil {
+		address = *prometheusConfig.Address
 	}
 
 	// Error if the minimum config is not set

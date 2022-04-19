@@ -62,7 +62,7 @@ func metricNameList(ctx context.Context, p *plugin.Plugin) ([]string, error) {
 
 	// Get list of metrics to create tables for from config
 	prometheusConfig := GetConfig(p.Connection)
-	if &prometheusConfig == nil || prometheusConfig.Metrics == nil {
+	if prometheusConfig.Metrics == nil {
 		return []string{}, nil
 	}
 
