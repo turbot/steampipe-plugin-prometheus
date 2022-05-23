@@ -36,13 +36,18 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		"prometheus_target":     tablePrometheusTarget(ctx),
 	}
 
+	type key string
+	  const (
+        metricName key = "metric_name"
+	  )
 	// Search for metrics to create as tables
 	metricNames, err := metricNameList(ctx, p)
 	if err != nil {
 		return nil, err
 	}
+
 	for _, i := range metricNames {
-		tableCtx := context.WithValue(ctx, "metric_name", i)
+		tableCtx := context.WithValue(ctx, metricName, i)
 		base := filepath.Base(i)
 		tableName := base[0 : len(base)-len(filepath.Ext(base))]
 		// Add the table if it does not already exist, ensuring standard tables win
