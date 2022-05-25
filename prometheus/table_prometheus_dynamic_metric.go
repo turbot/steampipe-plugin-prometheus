@@ -60,7 +60,7 @@ func tableDynamicMetric(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 	for _, i := range result.(model.Matrix) {
 		for k := range i.Metric {
 			sk := string(k)
-			if seenCols[sk] == true {
+			if seenCols[sk] {
 				continue
 			}
 			cols = append(cols, &plugin.Column{Name: sk, Type: proto.ColumnType_STRING, Transform: transform.FromField("Metric").TransformP(getMetricLabelFromMetric, sk), Description: fmt.Sprintf("The %s label.", sk)})
@@ -121,7 +121,6 @@ func listMetricWithName(metricName string) func(ctx context.Context, d *plugin.Q
 				case "=":
 					isRange = false
 					timestamp = ts
-					break
 				case "<=", "<":
 					r.End = ts
 				}

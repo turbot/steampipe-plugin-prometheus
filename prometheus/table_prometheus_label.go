@@ -53,7 +53,6 @@ func listLabel(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 			case "=":
 				startTime = ts
 				endTime = ts
-				break
 			case "<=", "<":
 				endTime = ts
 			}
@@ -110,7 +109,6 @@ func listLabelValue(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateD
 			case "=":
 				startTime = ts
 				endTime = ts
-				break
 			case "<=", "<":
 				endTime = ts
 			}

@@ -63,7 +63,6 @@ func listMetric(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 			case "=":
 				isRange = false
 				timestamp = ts
-				break
 			case "<=", "<":
 				r.End = ts
 			}
