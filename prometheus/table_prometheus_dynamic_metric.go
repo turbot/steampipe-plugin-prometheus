@@ -15,9 +15,6 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/plugin/transform"
 )
 
-
-
-
 func tableDynamicMetric(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 
 	conn, err := connectRaw(ctx, p.ConnectionManager, p.Connection)
