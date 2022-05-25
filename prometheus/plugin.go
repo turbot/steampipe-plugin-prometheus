@@ -38,7 +38,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 
 	type key string
 	  const (
-        metricName key = "metric_name"
+            metricName key = "metric_name"
 	  )
 	// Search for metrics to create as tables
 	metricNames, err := metricNameList(ctx, p)
