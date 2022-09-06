@@ -6,8 +6,8 @@ import (
 	"github.com/prometheus/client_golang/api"
 	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
 
-	"github.com/turbot/steampipe-plugin-sdk/v3/connection"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v4/connection"
+	"github.com/turbot/steampipe-plugin-sdk/v4/plugin"
 )
 
 func connect(ctx context.Context, d *plugin.QueryData) (v1.API, error) {
