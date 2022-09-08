@@ -15,9 +15,9 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v4/plugin/transform"
 )
 
-func tableDynamicMetric(ctx context.Context, p *plugin.Plugin) *plugin.Table {
+func tableDynamicMetric(ctx context.Context, d *plugin.QueryData) *plugin.Table {
 
-	conn, err := connectRaw(ctx, p.ConnectionManager, p.Connection)
+	conn, err := connectRaw(ctx, d)
 	if err != nil {
 		plugin.Logger(ctx).Error("prometheus_dynamic_metric.tableDynamicMetric", "connection_error", err)
 		return nil

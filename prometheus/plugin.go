@@ -10,6 +10,8 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v4/plugin/transform"
 )
 
+var pluginQuery *plugin.QueryData
+
 func Plugin(ctx context.Context) *plugin.Plugin {
 	p := &plugin.Plugin{
 		Name: "steampipe-plugin-prometheus",
@@ -23,7 +25,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 	return p
 }
 
-func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Table, error) {
+func pluginTableDefinitions(ctx context.Context, connection *plugin.Connection) (map[string]*plugin.Table, error) {
 
 	// Initialize tables
 	tables := map[string]*plugin.Table{
@@ -37,11 +39,11 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 	}
 
 	type key string
-	  const (
-            metricName key = "metric_name"
-	  )
+	const (
+		metricName key = "metric_name"
+	)
 	// Search for metrics to create as tables
-	metricNames, err := metricNameList(ctx, p)
+	metricNames, err := metricNameList(ctx, connection)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +54,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		tableName := base[0 : len(base)-len(filepath.Ext(base))]
 		// Add the table if it does not already exist, ensuring standard tables win
 		if tables[tableName] == nil {
-			tables[tableName] = tableDynamicMetric(tableCtx, p)
+			tables[tableName] = tableDynamicMetric(tableCtx, pluginQuery)
 		} else {
 			plugin.Logger(ctx).Error("prometheus.pluginTableDefinitions", "table_already_exists", tableName)
 		}
@@ -61,12 +63,12 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 	return tables, nil
 }
 
-func metricNameList(ctx context.Context, p *plugin.Plugin) ([]string, error) {
+func metricNameList(ctx context.Context, connection *plugin.Connection) ([]string, error) {
 	startTime := time.Now().Add(-time.Hour)
 	endTime := time.Now()
 
 	// Get list of metrics to create tables for from config
-	prometheusConfig := GetConfig(p.Connection)
+	prometheusConfig := GetConfig(connection)
 	if prometheusConfig.Metrics == nil {
 		return []string{}, nil
 	}
@@ -75,7 +77,7 @@ func metricNameList(ctx context.Context, p *plugin.Plugin) ([]string, error) {
 	q := "{__name__=~\"" + strings.Join(metrics, "|") + "\"}"
 	matches := []string{q}
 
-	conn, err := connectRaw(ctx, p.ConnectionManager, p.Connection)
+	conn, err := connectRaw(ctx, pluginQuery)
 	if err != nil {
 		plugin.Logger(ctx).Error("prometheus.metricNameList", "connection_error", err)
 		return nil, err
