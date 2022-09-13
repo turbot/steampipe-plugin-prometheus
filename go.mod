@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/prometheus/client_golang v1.12.2
 	github.com/prometheus/common v0.33.0
-	github.com/turbot/steampipe-plugin-sdk/v4 v4.1.6
+	github.com/turbot/steampipe-plugin-sdk/v4 v4.1.7
 )
 
 require (
