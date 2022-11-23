@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/turbot/steampipe-plugin-sdk/v4/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v4/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
 var pluginQuery *plugin.QueryData
@@ -25,7 +25,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 	return p
 }
 
-func pluginTableDefinitions(ctx context.Context, connection *plugin.Connection) (map[string]*plugin.Table, error) {
+func pluginTableDefinitions(ctx context.Context, d *plugin.TableMapData) (map[string]*plugin.Table, error) {
 
 	// Initialize tables
 	tables := map[string]*plugin.Table{
@@ -43,7 +43,7 @@ func pluginTableDefinitions(ctx context.Context, connection *plugin.Connection) 
 		metricName key = "metric_name"
 	)
 	// Search for metrics to create as tables
-	metricNames, err := metricNameList(ctx, connection)
+	metricNames, err := metricNameList(ctx, d.Connection)
 	if err != nil {
 		return nil, err
 	}
