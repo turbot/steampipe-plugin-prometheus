@@ -6,25 +6,26 @@ import (
 	"github.com/prometheus/client_golang/api"
 	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
 
+	"github.com/turbot/steampipe-plugin-sdk/v5/connection"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
 
 func connect(ctx context.Context, d *plugin.QueryData) (v1.API, error) {
-	return connectRaw(ctx, d)
+	return connectRaw(ctx, d.ConnectionCache, d.Connection)
 }
 
-func connectRaw(_ context.Context, d *plugin.QueryData) (v1.API, error) {
+func connectRaw(ctx context.Context, cc *connection.ConnectionCache, c *plugin.Connection) (v1.API, error) {
 
 	// Load connection from cache, which preserves throttling protection etc
 	cacheKey := "prometheus"
-	if cachedData, ok := d.ConnectionManager.Cache.Get(cacheKey); ok {
+	if cachedData, ok := cc.Get(ctx, cacheKey); ok {
 		return cachedData.(v1.API), nil
 	}
 
 	var address string
 
 	// Prefer config settings
-	prometheusConfig := GetConfig(d.Connection)
+	prometheusConfig := GetConfig(c)
 	if prometheusConfig.Address != nil {
 		address = *prometheusConfig.Address
 	}
@@ -46,7 +47,7 @@ func connectRaw(_ context.Context, d *plugin.QueryData) (v1.API, error) {
 	}
 
 	// Save to cache
-	d.ConnectionManager.Cache.Set(cacheKey, conn)
+	cc.Set(ctx, cacheKey, conn)
 
 	return conn, nil
 }
