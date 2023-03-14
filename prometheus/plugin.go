@@ -75,7 +75,7 @@ func metricNameList(ctx context.Context, p *plugin.TableMapData) ([]string, erro
 	q := "{__name__=~\"" + strings.Join(metrics, "|") + "\"}"
 	matches := []string{q}
 
-	conn, err := connectRaw(ctx, p.ConectionCache, p.Connection)
+	conn, err := connectRaw(ctx, p.ConnectionCache, p.Connection)
 	if err != nil {
 		plugin.Logger(ctx).Error("prometheus.metricNameList", "connection_error", err)
 		return nil, err

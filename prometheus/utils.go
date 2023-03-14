@@ -47,7 +47,11 @@ func connectRaw(ctx context.Context, cc *connection.ConnectionCache, c *plugin.C
 	}
 
 	// Save to cache
-	cc.Set(ctx, cacheKey, conn)
+	err = cc.Set(ctx, cacheKey, conn)
+
+	if err != nil {
+		plugin.Logger(ctx).Error("connectRaw", "cache-set", err)
+	}
 
 	return conn, nil
 }
