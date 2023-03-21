@@ -6,9 +6,9 @@ import (
 
 	"github.com/prometheus/common/model"
 
-	"github.com/turbot/steampipe-plugin-sdk/v3/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
 func tablePrometheusSeries(ctx context.Context) *plugin.Table {
@@ -44,7 +44,7 @@ func listSeries(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 		return nil, err
 	}
 
-	q := d.KeyColumnQuals["query"].GetStringValue()
+	q := d.EqualsQuals["query"].GetStringValue()
 
 	startTime := time.Now().Add(-time.Hour)
 	endTime := time.Now()

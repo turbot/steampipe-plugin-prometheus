@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/turbot/steampipe-plugin-sdk/v3/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
 func tablePrometheusLabel(ctx context.Context) *plugin.Table {
@@ -62,8 +62,8 @@ func listLabel(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) 
 	ts := startTime.Add(endTime.Sub(startTime) / 2)
 
 	q := []string{}
-	if d.KeyColumnQuals["query"] != nil {
-		qs := d.KeyColumnQuals["query"].GetStringValue()
+	if d.EqualsQuals["query"] != nil {
+		qs := d.EqualsQuals["query"].GetStringValue()
 		if qs != "" {
 			q = append(q, qs)
 		}
@@ -116,8 +116,8 @@ func listLabelValue(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateD
 	}
 
 	q := []string{}
-	if d.KeyColumnQuals["query"] != nil {
-		qs := d.KeyColumnQuals["query"].GetStringValue()
+	if d.EqualsQuals["query"] != nil {
+		qs := d.EqualsQuals["query"].GetStringValue()
 		if qs != "" {
 			q = append(q, qs)
 		}

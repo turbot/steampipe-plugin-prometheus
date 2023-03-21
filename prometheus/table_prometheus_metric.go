@@ -7,9 +7,9 @@ import (
 	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
 	"github.com/prometheus/common/model"
 
-	"github.com/turbot/steampipe-plugin-sdk/v3/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
 func tablePrometheusMetric(ctx context.Context) *plugin.Table {
@@ -79,11 +79,11 @@ func listMetric(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 
 	// Allow user to change in the query
 	if d.Quals["step_seconds"] != nil {
-		r.Step = time.Second * time.Duration(d.KeyColumnQuals["step_seconds"].GetInt64Value())
+		r.Step = time.Second * time.Duration(d.EqualsQuals["step_seconds"].GetInt64Value())
 	}
 
 	// Get the query (required)
-	q := d.KeyColumnQuals["query"].GetStringValue()
+	q := d.EqualsQuals["query"].GetStringValue()
 
 	if isRange {
 

@@ -6,9 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
+
 
 func Plugin(ctx context.Context) *plugin.Plugin {
 	p := &plugin.Plugin{
@@ -18,12 +19,13 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			Schema:      ConfigSchema,
 		},
 		DefaultTransform: transform.FromGo(),
+		SchemaMode:   		plugin.SchemaModeDynamic,
 		TableMapFunc:     pluginTableDefinitions,
 	}
 	return p
 }
 
-func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Table, error) {
+func pluginTableDefinitions(ctx context.Context, p *plugin.TableMapData) (map[string]*plugin.Table, error) {
 
 	// Initialize tables
 	tables := map[string]*plugin.Table{
@@ -36,10 +38,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		"prometheus_target":     tablePrometheusTarget(ctx),
 	}
 
-	type key string
-	  const (
-            metricName key = "metric_name"
-	  )
+
 	// Search for metrics to create as tables
 	metricNames, err := metricNameList(ctx, p)
 	if err != nil {
@@ -47,7 +46,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 	}
 
 	for _, i := range metricNames {
-		tableCtx := context.WithValue(ctx, metricName, i)
+		tableCtx := context.WithValue(ctx, "metric_name", i)
 		base := filepath.Base(i)
 		tableName := base[0 : len(base)-len(filepath.Ext(base))]
 		// Add the table if it does not already exist, ensuring standard tables win
@@ -61,7 +60,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 	return tables, nil
 }
 
-func metricNameList(ctx context.Context, p *plugin.Plugin) ([]string, error) {
+func metricNameList(ctx context.Context, p *plugin.TableMapData) ([]string, error) {
 	startTime := time.Now().Add(-time.Hour)
 	endTime := time.Now()
 
@@ -75,7 +74,7 @@ func metricNameList(ctx context.Context, p *plugin.Plugin) ([]string, error) {
 	q := "{__name__=~\"" + strings.Join(metrics, "|") + "\"}"
 	matches := []string{q}
 
-	conn, err := connectRaw(ctx, p.ConnectionManager, p.Connection)
+	conn, err := connectRaw(ctx, p.ConnectionCache, p.Connection)
 	if err != nil {
 		plugin.Logger(ctx).Error("prometheus.metricNameList", "connection_error", err)
 		return nil, err

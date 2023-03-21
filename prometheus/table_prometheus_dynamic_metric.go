@@ -10,14 +10,14 @@ import (
 	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
 	"github.com/prometheus/common/model"
 
-	"github.com/turbot/steampipe-plugin-sdk/v3/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
-func tableDynamicMetric(ctx context.Context, p *plugin.Plugin) *plugin.Table {
+func tableDynamicMetric(ctx context.Context, p *plugin.TableMapData) *plugin.Table {
 
-	conn, err := connectRaw(ctx, p.ConnectionManager, p.Connection)
+	conn, err := connectRaw(ctx, p.ConnectionCache, p.Connection)
 	if err != nil {
 		plugin.Logger(ctx).Error("prometheus_dynamic_metric.tableDynamicMetric", "connection_error", err)
 		return nil
@@ -137,14 +137,14 @@ func listMetricWithName(metricName string) func(ctx context.Context, d *plugin.Q
 
 		// Allow user to change in the query
 		if d.Quals["step_seconds"] != nil {
-			r.Step = time.Second * time.Duration(d.KeyColumnQuals["step_seconds"].GetInt64Value())
+			r.Step = time.Second * time.Duration(d.EqualsQuals["step_seconds"].GetInt64Value())
 		}
 
 		// Always filter results to the specific metric
 		metricNameBytes, _ := json.Marshal(metricName)
 		pairs := []string{fmt.Sprintf(`__name__=%s`, string(metricNameBytes))}
 		// Add any other qualifier filters
-		for k, v := range d.KeyColumnQuals {
+		for k, v := range d.EqualsQuals {
 			// Skip any non-label quals
 			if k == "timestamp" || k == "step_seconds" {
 				continue
