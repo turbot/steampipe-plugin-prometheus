@@ -1,3 +1,9 @@
+## v0.2.0 [2023-03-22]
+
+_Dependencies_
+
+- Recompiled plugin with [steampipe-plugin-sdk v5.3.0](https://github.com/turbot/steampipe-plugin-sdk/blob/main/CHANGELOG.md#v530-2023-03-16) which includes fixes for query cache pending item mechanism and aggregator connections not working for dynamic tables. ([#9](https://github.com/turbot/steampipe-plugin-prometheus/pull/9))
+- Recompiled plugin with Go version `1.19`. ([#9](https://github.com/turbot/steampipe-plugin-prometheus/pull/9))
 
 ## v0.1.0 [2022-05-25]
 
