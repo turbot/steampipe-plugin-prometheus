@@ -10,6 +10,7 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
+
 func Plugin(ctx context.Context) *plugin.Plugin {
 	p := &plugin.Plugin{
 		Name: "steampipe-plugin-prometheus",
@@ -37,10 +38,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.TableMapData) (map[st
 		"prometheus_target":     tablePrometheusTarget(ctx),
 	}
 
-	type key string
-	const (
-		metricName key = "metric_name"
-	)
+
 	// Search for metrics to create as tables
 	metricNames, err := metricNameList(ctx, p)
 	if err != nil {
@@ -48,7 +46,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.TableMapData) (map[st
 	}
 
 	for _, i := range metricNames {
-		tableCtx := context.WithValue(ctx, metricName, i)
+		tableCtx := context.WithValue(ctx, "metric_name", i)
 		base := filepath.Base(i)
 		tableName := base[0 : len(base)-len(filepath.Ext(base))]
 		// Add the table if it does not already exist, ensuring standard tables win
