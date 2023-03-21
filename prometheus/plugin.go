@@ -18,6 +18,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			Schema:      ConfigSchema,
 		},
 		DefaultTransform: transform.FromGo(),
+		SchemaMode:   		plugin.SchemaModeDynamic,
 		TableMapFunc:     pluginTableDefinitions,
 	}
 	return p
