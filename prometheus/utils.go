@@ -2,6 +2,7 @@ package prometheus
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/prometheus/client_golang/api"
 	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
@@ -14,6 +15,18 @@ func connect(ctx context.Context, d *plugin.QueryData) (v1.API, error) {
 	return connectRaw(ctx, d.ConnectionCache, d.Connection)
 }
 
+type transport struct {
+	headerName  string
+	headerValue string
+}
+
+func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {
+	if t.headerName != "" {
+		req.Header.Add(t.headerName, t.headerValue)
+	}
+	return http.DefaultTransport.RoundTrip(req)
+}
+
 func connectRaw(ctx context.Context, cc *connection.ConnectionCache, c *plugin.Connection) (v1.API, error) {
 
 	// Load connection from cache, which preserves throttling protection etc
@@ -23,11 +36,21 @@ func connectRaw(ctx context.Context, cc *connection.ConnectionCache, c *plugin.C
 	}
 
 	var address string
+	var headerName string
+	var headerValue string
 
 	// Prefer config settings
 	prometheusConfig := GetConfig(c)
 	if prometheusConfig.Address != nil {
 		address = *prometheusConfig.Address
+	}
+
+	if prometheusConfig.HeaderName != nil {
+		headerName = *prometheusConfig.HeaderName
+	}
+
+	if prometheusConfig.HeaderValue != nil {
+		headerValue = *prometheusConfig.HeaderValue
 	}
 
 	// Error if the minimum config is not set
@@ -36,8 +59,13 @@ func connectRaw(ctx context.Context, cc *connection.ConnectionCache, c *plugin.C
 		panic("address must be configured")
 	}
 
+	if (headerName != "" && headerValue == "") || (headerName == "" && headerValue != "") {
+		panic("must provide either both headerName and headerValue or neither")
+	}
+
 	client, err := api.NewClient(api.Config{
 		Address: address,
+		Client:  &http.Client{Transport: &transport{headerName: headerName, headerValue: headerValue}},
 	})
 
 	conn := v1.NewAPI(client)
