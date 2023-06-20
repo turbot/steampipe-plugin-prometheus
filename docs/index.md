@@ -88,11 +88,16 @@ connection "prometheus" {
   plugin = "prometheus"
   address = "http://localhost:9090"
   metrics = ["prometheus_http_requests_.*", ".*error.*"]
+  headerName = "Authorization"
+  headerValue = "Bearer 42"
 }
 ```
 
 - `address` - HTTP address of your prometheus server
 - `metrics` - List of metric expressions to be matched against while creating dynamic metric tables
+- `headerName` - Additional header name to send to the server. If this is set, `headerValue` must also be set.
+- `headerVame` - Additional header value to send to the server. If this is set, `headerName` must also be set.
+
 
 ## Get involved
 
