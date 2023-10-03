@@ -2,6 +2,7 @@ package prometheus
 
 import (
 	"context"
+	"os"
 
 	"github.com/prometheus/client_golang/api"
 	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
@@ -22,10 +23,10 @@ func connectRaw(ctx context.Context, cc *connection.ConnectionCache, c *plugin.C
 		return cachedData.(v1.API), nil
 	}
 
-	var address string
-
 	// Prefer config settings
 	prometheusConfig := GetConfig(c)
+
+	address := os.Getenv("PROMETHEUS_ADDRESS")
 	if prometheusConfig.Address != nil {
 		address = *prometheusConfig.Address
 	}

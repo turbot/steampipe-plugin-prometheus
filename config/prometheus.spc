@@ -1,7 +1,7 @@
 connection "prometheus" {
   plugin = "prometheus"
 
-  # HTTP address of your prometheus server
+  # The address of your Prometheus (can also be set with the PROMETHEUS_ADDRESS environment variable.).
   # address = "http://localhost:9090"
 
   # List of metrics that will be considered for dynamic table creation

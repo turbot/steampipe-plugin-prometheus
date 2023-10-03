@@ -86,6 +86,9 @@ Installing the latest prometheus plugin will create a config file (`~/.steampipe
 ```hcl
 connection "prometheus" {
   plugin = "prometheus"
+
+
+  # The address of your Prometheus (can also be set with the PROMETHEUS_ADDRESS environment variable.).
   address = "http://localhost:9090"
   metrics = ["prometheus_http_requests_.*", ".*error.*"]
 }
