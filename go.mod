@@ -3,8 +3,8 @@ module github.com/turbot/steampipe-plugin-prometheus
 go 1.21
 
 require (
-	github.com/prometheus/client_golang v1.14.0
-	github.com/prometheus/common v0.37.0
+	github.com/prometheus/client_golang v1.15.1
+	github.com/prometheus/common v0.44.0
 	github.com/turbot/steampipe-plugin-sdk/v5 v5.6.2
 )
 
@@ -73,8 +73,8 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/pegasus-kv/thrift v0.13.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/prometheus/client_model v0.3.0 // indirect
-	github.com/prometheus/procfs v0.8.0 // indirect
+	github.com/prometheus/client_model v0.4.0 // indirect
+	github.com/prometheus/procfs v0.9.0 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/sethvargo/go-retry v0.2.4 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
