@@ -1,3 +1,9 @@
+## v0.5.0 [2023-10-20]
+
+_What's new?_
+
+- The Prometheus address (`address`) can now be set with the `PROMETHEUS_URL` environment variable. ([#23](https://github.com/turbot/steampipe-plugin-prometheus/pull/23)) (Thanks [@beudbeud](https://github.com/beudbeud) for the contribution!)
+
 ## v0.4.1 [2023-10-05]
 
 _Dependencies_
