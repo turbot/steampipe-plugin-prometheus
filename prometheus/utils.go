@@ -17,7 +17,7 @@ func connect(ctx context.Context, d *plugin.QueryData) (v1.API, error) {
 
 func connectRaw(ctx context.Context, cc *connection.ConnectionCache, c *plugin.Connection) (v1.API, error) {
 
-	var address string 
+	var address string
 
 	// Load connection from cache, which preserves throttling protection etc
 	cacheKey := "prometheus"
@@ -28,7 +28,7 @@ func connectRaw(ctx context.Context, cc *connection.ConnectionCache, c *plugin.C
 	// Prefer config settings
 	prometheusConfig := GetConfig(c)
 
-	address = os.Getenv("PROMETHEUS_ADDRESS")
+	address = os.Getenv("PROMETHEUS_URL")
 	if prometheusConfig.Address != nil {
 		address = *prometheusConfig.Address
 	}

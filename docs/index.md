@@ -89,14 +89,14 @@ connection "prometheus" {
 
 
   # The address of your Prometheus.
-  # Can also be set with the PROMETHEUS_ADDRESS environment variable.
+  # Can also be set with the PROMETHEUS_URL environment variable
   address = "http://localhost:9090"
   metrics = ["prometheus_http_requests_.*", ".*error.*"]
 }
 ```
 
-- `address` - HTTP address of your prometheus server
-- `metrics` - List of metric expressions to be matched against while creating dynamic metric tables
+- `address` - HTTP address of your prometheus server. Can also be set with the PROMETHEUS_URL environment variable.
+- `metrics` - List of metric expressions to be matched against while creating dynamic metric tables.
 
 ## Get involved
 
