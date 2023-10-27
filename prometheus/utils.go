@@ -3,6 +3,7 @@ package prometheus
 import (
 	"context"
 	"net/http"
+	"os"
 
 	"github.com/prometheus/client_golang/api"
 	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
@@ -29,6 +30,8 @@ func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {
 
 func connectRaw(ctx context.Context, cc *connection.ConnectionCache, c *plugin.Connection) (v1.API, error) {
 
+	var address string
+
 	// Load connection from cache, which preserves throttling protection etc
 	cacheKey := "prometheus"
 	if cachedData, ok := cc.Get(ctx, cacheKey); ok {
@@ -38,9 +41,11 @@ func connectRaw(ctx context.Context, cc *connection.ConnectionCache, c *plugin.C
 	var address string
 	var headerName string
 	var headerValue string
-
+  
 	// Prefer config settings
 	prometheusConfig := GetConfig(c)
+
+	address = os.Getenv("PROMETHEUS_URL")
 	if prometheusConfig.Address != nil {
 		address = *prometheusConfig.Address
 	}

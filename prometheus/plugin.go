@@ -10,6 +10,7 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
+type ctxKey struct{}
 
 func Plugin(ctx context.Context) *plugin.Plugin {
 	p := &plugin.Plugin{
@@ -46,7 +47,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.TableMapData) (map[st
 	}
 
 	for _, i := range metricNames {
-		tableCtx := context.WithValue(ctx, "metric_name", i)
+		tableCtx := context.WithValue(ctx, ctxKey{}, i)
 		base := filepath.Base(i)
 		tableName := base[0 : len(base)-len(filepath.Ext(base))]
 		// Add the table if it does not already exist, ensuring standard tables win

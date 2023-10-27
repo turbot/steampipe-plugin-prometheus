@@ -86,6 +86,10 @@ Installing the latest prometheus plugin will create a config file (`~/.steampipe
 ```hcl
 connection "prometheus" {
   plugin = "prometheus"
+
+
+  # The address of your Prometheus.
+  # Can also be set with the PROMETHEUS_URL environment variable
   address = "http://localhost:9090"
   metrics = ["prometheus_http_requests_.*", ".*error.*"]
   headerName = "Authorization"
@@ -98,8 +102,7 @@ connection "prometheus" {
 - `headerName` - Additional header name to send to the server. If this is set, `headerValue` must also be set.
 - `headerVame` - Additional header value to send to the server. If this is set, `headerName` must also be set.
 
-
 ## Get involved
 
 - Open source: https://github.com/turbot/steampipe-plugin-prometheus
-- Community: [Slack Channel](https://steampipe.io/community/join)
+- Community: [Join #steampipe on Slack →](https://turbot.com/community/join)

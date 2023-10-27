@@ -1,3 +1,28 @@
+## v0.5.0 [2023-10-20]
+
+_What's new?_
+
+- The Prometheus address (`address`) can now be set with the `PROMETHEUS_URL` environment variable. ([#23](https://github.com/turbot/steampipe-plugin-prometheus/pull/23)) (Thanks [@beudbeud](https://github.com/beudbeud) for the contribution!)
+
+## v0.4.1 [2023-10-05]
+
+_Dependencies_
+
+- Recompiled plugin with [steampipe-plugin-sdk v5.6.2](https://github.com/turbot/steampipe-plugin-sdk/blob/main/CHANGELOG.md#v562-2023-10-03) which prevents nil pointer reference errors for implicit hydrate configs. ([#24](https://github.com/turbot/steampipe-plugin-prometheus/pull/24))
+
+## v0.4.0 [2023-10-02]
+
+_Dependencies_
+
+- Upgraded to [steampipe-plugin-sdk v5.6.1](https://github.com/turbot/steampipe-plugin-sdk/blob/main/CHANGELOG.md#v561-2023-09-29) with support for rate limiters. ([#19](https://github.com/turbot/steampipe-plugin-prometheus/pull/19))
+- Recompiled plugin with Go version `1.21`. ([#19](https://github.com/turbot/steampipe-plugin-prometheus/pull/19))
+
+## v0.3.0 [2023-06-20]
+
+_Dependencies_
+
+- Recompiled plugin with [steampipe-plugin-sdk v5.5.0](https://github.com/turbot/steampipe-plugin-sdk/blob/v5.5.0/CHANGELOG.md#v550-2023-06-16) which significantly reduces API calls and boosts query performance, resulting in faster data retrieval. This update significantly lowers the plugin initialization time of dynamic plugins by avoiding recursing into child folders when not necessary. ([#13](https://github.com/turbot/steampipe-plugin-prometheus/pull/13))
+
 ## v0.2.0 [2023-03-22]
 
 _Dependencies_
