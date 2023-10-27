@@ -92,11 +92,15 @@ connection "prometheus" {
   # Can also be set with the PROMETHEUS_URL environment variable
   address = "http://localhost:9090"
   metrics = ["prometheus_http_requests_.*", ".*error.*"]
+  headerName = "Authorization"
+  headerValue = "Bearer 42"
 }
 ```
 
-- `address` - HTTP address of your prometheus server. Can also be set with the PROMETHEUS_URL environment variable.
-- `metrics` - List of metric expressions to be matched against while creating dynamic metric tables.
+- `address` - HTTP address of your prometheus server
+- `metrics` - List of metric expressions to be matched against while creating dynamic metric tables
+- `headerName` - Additional header name to send to the server. If this is set, `headerValue` must also be set.
+- `headerVame` - Additional header value to send to the server. If this is set, `headerName` must also be set.
 
 ## Get involved
 

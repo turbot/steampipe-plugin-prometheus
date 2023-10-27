@@ -13,4 +13,9 @@ connection "prometheus" {
   #   - "prometheus_http_request.*" matches metrics starting with "prometheus_http_request"
   #   - ".*error.*" matches metrics containing the word "error"
   # metrics = [".+"]
+
+  # Header name and values to be used on the requests, generally for authentication.
+  # For example, for passing "Authorization: Bearer 42" use:
+  # headerName = "Authorization"
+  # headerValue = "Bearer 42"
 }
