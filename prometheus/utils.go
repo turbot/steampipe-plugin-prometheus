@@ -30,7 +30,6 @@ func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {
 
 func connectRaw(ctx context.Context, cc *connection.ConnectionCache, c *plugin.Connection) (v1.API, error) {
 
-	var address string
 
 	// Load connection from cache, which preserves throttling protection etc
 	cacheKey := "prometheus"
@@ -41,7 +40,7 @@ func connectRaw(ctx context.Context, cc *connection.ConnectionCache, c *plugin.C
 	var address string
 	var headerName string
 	var headerValue string
-  
+
 	// Prefer config settings
 	prometheusConfig := GetConfig(c)
 
