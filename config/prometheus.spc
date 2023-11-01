@@ -16,6 +16,7 @@ connection "prometheus" {
 
   # Header name and values to be used on the requests, generally for authentication.
   # For example, for passing "Authorization: Bearer 42" use:
-  # headerName = "Authorization"
-  # headerValue = "Bearer 42"
+  # request_header = {
+  #   Authorization = "Bearer Token"
+  # }
 }

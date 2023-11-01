@@ -2,30 +2,12 @@ package prometheus
 
 import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/schema"
 )
 
 type prometheusConfig struct {
-	Address     *string  `cty:"address"`
-	HeaderName  *string  `cty:"headerName"`
-	HeaderValue *string  `cty:"headerValue"`
-	Metrics     []string `cty:"metrics"`
-}
-
-var ConfigSchema = map[string]*schema.Attribute{
-	"address": {
-		Type: schema.TypeString,
-	},
-	"headerName": {
-		Type: schema.TypeString,
-	},
-	"headerValue": {
-		Type: schema.TypeString,
-	},
-	"metrics": {
-		Type: schema.TypeList,
-		Elem: &schema.Attribute{Type: schema.TypeString},
-	},
+	Address       *string           `hcl:"address"`
+	Metrics       []string          `hcl:"metrics"`
+	RequestHeader map[string]string `hcl:"request_header"`
 }
 
 func ConfigInstance() interface{} {

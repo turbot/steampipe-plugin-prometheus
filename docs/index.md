@@ -92,15 +92,16 @@ connection "prometheus" {
   # Can also be set with the PROMETHEUS_URL environment variable
   address = "http://localhost:9090"
   metrics = ["prometheus_http_requests_.*", ".*error.*"]
-  headerName = "Authorization"
-  headerValue = "Bearer 42"
+
+  request_header = {
+    Authorization = "Bearer Token"
+  }
 }
 ```
 
 - `address` - HTTP address of your prometheus server
 - `metrics` - List of metric expressions to be matched against while creating dynamic metric tables
-- `headerName` - Additional header name to send to the server. If this is set, `headerValue` must also be set.
-- `headerVame` - Additional header value to send to the server. If this is set, `headerName` must also be set.
+- `request_header` - An additional header name and its corresponding value to be sent to the server. If the header name is configured, the value must not be empty.
 
 ## Get involved
 
