@@ -101,7 +101,7 @@ connection "prometheus" {
 
 - `address` - HTTP address of your prometheus server
 - `metrics` - List of metric expressions to be matched against while creating dynamic metric tables
-- `request_header` - An additional header name and its corresponding value to be sent to the server. If the header name is configured, the value must not be empty.
+- `request_header`(Optional) - An additional header name and its corresponding value to be sent to the server. If the header name is configured, the value must not be empty.
 
 ## Get involved
 

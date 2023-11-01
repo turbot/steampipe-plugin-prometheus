@@ -7,7 +7,7 @@ import (
 type prometheusConfig struct {
 	Address       *string           `hcl:"address"`
 	Metrics       []string          `hcl:"metrics"`
-	RequestHeader map[string]string `hcl:"request_header"`
+	RequestHeader map[string]string `hcl:"request_header,optional"`
 }
 
 func ConfigInstance() interface{} {
