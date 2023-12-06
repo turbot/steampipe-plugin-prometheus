@@ -1,20 +1,74 @@
 ---
-title: "Steampipe Table: metric_name - Query OCI Service OCI_resource using SQL"
-description: "Allows users to query OCI_resource in OCI Service, providing insights into specific metrics and potential anomalies."
+title: "Steampipe Table: {metric_name} - Query Prometheus metrics using SQL"
+description: "Allows users to query Proemtheus metrics, providing insights into specific metrics and potential anomalies."
 ---
 
-# Table: metric_name - Query OCI Service OCI_resource using SQL
+# Table: {metric_name} - Query Prometheus metrics using SQL
 
-OCI Service is a service within Oracle Cloud Infrastructure that allows you to monitor and respond to issues across your applications and infrastructure. It provides a centralized way to set up and manage alerts for various OCI resources. OCI Service helps you stay informed about the health and performance of your OCI resources and take appropriate actions when predefined conditions are met.
+Query data from the metric called `{metric_name}`. A table is automatically created to represent each metric.
 
-## Table Usage Guide
+For instance, given the metric:
 
-The `metric_name` table provides insights into metrics within OCI Service. As a cloud engineer, explore metric-specific details through this table, including performance, utilization, and associated metadata. Utilize it to uncover information about metrics, such as those indicating performance issues, the relationships between different metrics, and the verification of utilization rates. For more details, refer to the [schema link](https://hub.steampipe.io/plugins/turbot/prometheus/tables/metric_name).
+```
+{
+  "__name__": "prometheus_http_requests_total",
+  "code": "302",
+  "handler": "/",
+  "instance": "localhost:9090",
+  "job":"prometheus"
+}
+```
+
+And the connection configuration:
+```hcl
+connection "prometheus" {
+  plugin = "prometheus"
+  address = "http://localhost:9090"
+  metrics = ["prometheus_http_requests_total"]
+}
+```
+
+This plugin will automatically create a table called `prometheus_http_requests_total`:
+```
+> select * from prometheus_http_requests_total;
++----------------------+-------+------+----------------------------+----------------+------------+--------------+
+| timestamp            | value | code | handler                    | instance       | job        | step_seconds |
++----------------------+-------+------+----------------------------+----------------+------------+--------------+
+| 2021-11-06T02:05:41Z | 308   | 200  | /api/v1/label/:name/values | localhost:9090 | prometheus | 60           |
+| 2021-11-06T01:43:41Z | 1     | 200  | /-/ready                   | localhost:9090 | prometheus | 60           |
+| 2021-11-06T01:56:41Z | 12    | 200  | /api/v1/labels             | localhost:9090 | prometheus | 60           |
++----------------------+-------+------+----------------------------+----------------+------------+--------------+
+```
+
+Regular expressions can also be used to match metric names. For instance, if
+you want to create tables for all metrics starting with
+`prometheus_target_`, use the following configuration:
+
+```hcl
+connection "prometheus" {
+  plugin = "prometheus"
+  address = "http://localhost:9090"
+  metrics = ["prometheus_target_.*"]
+}
+```
+
+If you want to create tables for all metrics, use:
+
+```hcl
+connection "prometheus" {
+  plugin = "prometheus"
+  address = "http://localhost:9090"
+  metrics = [".+"]
+}
+```
+
+However, please note that this could be slow depending on how many metrics are
+in your environment.
 
 ## Examples
 
 ### Inspect the table structure
-Explore the structure of a specific metric table to gain insights into its composition and the type of data it holds. This is useful for understanding what information is available for analysis and how it is organized within the table.
+
 Assuming your connection configuration is:
 ```hcl
 connection "prometheus" {
@@ -25,7 +79,6 @@ connection "prometheus" {
 ```
 
 List all tables with:
-
 ```sql
 .inspect prometheus
 +--------------------------------+---------------------------------------------------+
@@ -55,7 +108,6 @@ To get details of a specific metric table, inspect it by name:
 ```
 
 ### Get current values for prometheus_http_requests_total
-Explore the current metrics of total HTTP requests in your Prometheus monitoring system. This can assist in understanding the load on your system and aid in capacity planning.
 
 ```sql
 select
@@ -65,7 +117,6 @@ from
 ```
 
 ### Get current values for a metric with specific labels
-Discover the segments that are currently active for a specific metric label, which can help in assessing the performance and identifying potential issues. This can be particularly useful in monitoring and managing web traffic for specific metrics.
 
 ```sql
 select
@@ -77,7 +128,6 @@ where
 ```
 
 ### Get values from 24 hrs ago for a metric
-Explore the performance of your web server by examining metrics from 24 hours ago. This can help identify any significant changes or issues that have occurred within the past day.
 
 ```sql
 select
@@ -92,7 +142,6 @@ where
 ```
 
 ### Get metric values every 5 mins for the last hour
-Analyze the frequency of HTTP requests over the past hour, segmented into 5-minute intervals. This can help in identifying patterns or anomalies in web traffic.
 
 ```sql
 select

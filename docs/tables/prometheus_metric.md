@@ -11,6 +11,9 @@ Prometheus is an open-source systems monitoring and alerting toolkit. It collect
 
 The `prometheus_metric` table provides insights into the numerical data about the state of a system in Prometheus. As a system administrator or DevOps engineer, explore metric-specific details through this table, including metric names, labels, and values. Utilize it to monitor system performance, identify potential issues, and make data-driven decisions about system improvements.
 
+**Important Notes**
+- A `query` must be provided in all queries to this table.
+
 ## Examples
 
 ### Get current values for a metric
