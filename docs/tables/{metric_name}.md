@@ -79,6 +79,7 @@ connection "prometheus" {
 ```
 
 List all tables with:
+
 ```sql
 .inspect prometheus
 +--------------------------------+---------------------------------------------------+
@@ -92,6 +93,7 @@ List all tables with:
 ```
 
 To get details of a specific metric table, inspect it by name:
+
 ```sql
 > .inspect prometheus.prometheus_http_requests_total
 +--------------+--------------------------+----------------------------------------------------------------+
@@ -109,27 +111,43 @@ To get details of a specific metric table, inspect it by name:
 
 ### Get current values for prometheus_http_requests_total
 
-```sql
+```sql+postgres
 select
   *
 from
-  prometheus_http_requests_total
+  prometheus_http_requests_total;
+```
+
+```sql+sqlite
+select
+  *
+from
+  prometheus_http_requests_total;
 ```
 
 ### Get current values for a metric with specific labels
 
-```sql
+```sql+postgres
 select
   *
 from
   prometheus_http_requests_total
 where
-  handler = '/metrics'
+  handler = '/metrics';
+```
+
+```sql+sqlite
+select
+  *
+from
+  prometheus_http_requests_total
+where
+  handler = '/metrics';
 ```
 
 ### Get values from 24 hrs ago for a metric
 
-```sql
+```sql+postgres
 select
   timestamp,
   code,
@@ -138,12 +156,24 @@ select
 from
   prometheus_http_requests_total
 where
-  timestamp = now() - interval '24 hrs'
+  timestamp = now() - interval '24 hrs';
+```
+
+```sql+sqlite
+select
+  timestamp,
+  code,
+  handler,
+  value
+from
+  prometheus_http_requests_total
+where
+  timestamp = datetime('now','-24 hours');
 ```
 
 ### Get metric values every 5 mins for the last hour
 
-```sql
+```sql+postgres
 select
   timestamp,
   code,
@@ -155,5 +185,20 @@ where
   timestamp > now() - interval '1 hrs'
   and step_seconds = 300
 order by
-  timestamp
+  timestamp;
+```
+
+```sql+sqlite
+select
+  timestamp,
+  code,
+  handler,
+  value
+from
+  prometheus_http_requests_total
+where
+  timestamp > datetime('now','-1 hours')
+  and step_seconds = 300
+order by
+  timestamp;
 ```

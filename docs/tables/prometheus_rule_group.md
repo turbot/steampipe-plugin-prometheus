@@ -16,9 +16,16 @@ The `prometheus_rule_group` table provides insights into Rule Groups within Prom
 ### List all rule groups
 Explore all the rule groups in your Prometheus monitoring system to understand how your rules are organized and to identify potential areas for optimization or reconfiguration. This can be especially beneficial for large-scale systems where efficient rule management is crucial.
 
-```sql
+```sql+postgres
 select
   *
 from
-  prometheus_rule_group
+  prometheus_rule_group;
+```
+
+```sql+sqlite
+select
+  *
+from
+  prometheus_rule_group;
 ```

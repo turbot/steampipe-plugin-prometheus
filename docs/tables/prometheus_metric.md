@@ -19,44 +19,72 @@ The `prometheus_metric` table provides insights into the numerical data about th
 ### Get current values for a metric
 Explore the current values for a specific metric to monitor the performance and health of your system. This could be particularly useful in identifying potential issues or bottlenecks in your system's operation.
 
-```sql
+```sql+postgres
 select
   *
 from
   prometheus_metric
 where
-  query = 'prometheus_http_requests_total'
+  query = 'prometheus_http_requests_total';
+```
+
+```sql+sqlite
+select
+  *
+from
+  prometheus_metric
+where
+  query = 'prometheus_http_requests_total';
 ```
 
 ### Get current values for a metric with specific labels
 Explore the current values of a specific metric by identifying its unique labels. This can be beneficial in monitoring and analyzing the performance of your system based on certain parameters.
 
-```sql
+```sql+postgres
 select
   *
 from
   prometheus_metric
 where
-  query = 'prometheus_http_requests_total{handler="/metrics"}'
+  query = 'prometheus_http_requests_total{handler="/metrics"}';
+```
+
+```sql+sqlite
+select
+  *
+from
+  prometheus_metric
+where
+  query = 'prometheus_http_requests_total{handler="/metrics"}';
 ```
 
 ### Get values from 24 hrs ago for a metric
 Analyze the metrics to understand the changes in HTTP requests over the past 24 hours. This is particularly useful for monitoring server performance and identifying potential issues or anomalies.
 
-```sql
+```sql+postgres
 select
   *
 from
   prometheus_metric
 where
   query = 'prometheus_http_requests_total'
-  and timestamp = now() - interval '24 hrs'
+  and timestamp = now() - interval '24 hrs';
+```
+
+```sql+sqlite
+select
+  *
+from
+  prometheus_metric
+where
+  query = 'prometheus_http_requests_total'
+  and timestamp = datetime('now', '-24 hours');
 ```
 
 ### Get metric values every 5 mins for the last hour
 Analyze the frequency of HTTP requests in the last hour, by obtaining metrics at 5-minute intervals. This can help monitor web traffic patterns and identify potential surges or dips in usage.
 
-```sql
+```sql+postgres
 select
   *
 from
@@ -66,5 +94,18 @@ where
   and timestamp > now() - interval '1 hrs'
   and step_seconds = 300
 order by
-  timestamp
+  timestamp;
+```
+
+```sql+sqlite
+select
+  *
+from
+  prometheus_metric
+where
+  query = 'prometheus_http_requests_total'
+  and timestamp > datetime('now', '-1 hours')
+  and step_seconds = 300
+order by
+  timestamp;
 ```

@@ -16,17 +16,24 @@ The `prometheus_label` table provides insights into the labels used in Prometheu
 ### List all labels names
 Explore all existing labels in your Prometheus monitoring system to understand the various classifications and groupings within your data. This can help in organizing and managing your system more effectively.
 
-```sql
+```sql+postgres
 select
   name
 from
-  prometheus_label
+  prometheus_label;
+```
+
+```sql+sqlite
+select
+  name
+from
+  prometheus_label;
 ```
 
 ### List all labels with their values
 Explore which labels are associated with specific values in your Prometheus data. This can help you categorize and better understand your data for more effective management and analysis.
 
-```sql
+```sql+postgres
 select
   ln.name as name,
   value
@@ -35,5 +42,17 @@ from
   jsonb_array_elements_text(ln.values) as value
 order by
   name,
+  value;
+```
+
+```sql+sqlite
+select
+  ln.name as name,
   value
+from
+  prometheus_label as ln,
+  json_each(ln.values) as value
+order by
+  name,
+  value.value;
 ```

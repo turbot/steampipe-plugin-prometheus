@@ -16,33 +16,58 @@ The `prometheus_alert` table provides insights into active alerts within Prometh
 ### List all alerts
 Gain insights into all the alerts currently active in your system. This can be useful for monitoring system health and responding quickly to any issues.
 
-```sql
+```sql+postgres
 select
   *
 from
-  prometheus_alert
+  prometheus_alert;
+```
+
+```sql+sqlite
+select
+  *
+from
+  prometheus_alert;
 ```
 
 ### Alerts with a labeled severity of high
 Identify instances where alerts have been marked with a high severity level. This can be useful in prioritizing responses to potential issues within your system.
 
-```sql
+```sql+postgres
 select
   *
 from
   prometheus_alert
 where
-  labels ->> 'severity' = 'high'
+  labels ->> 'severity' = 'high';
+```
+
+```sql+sqlite
+select
+  *
+from
+  prometheus_alert
+where
+  json_extract(labels, '$.severity') = 'high';
 ```
 
 ### Alerts that became active in the last 5 mins
 Discover the alerts that have been activated recently, allowing you to respond promptly to any potential issues or threats. This can be particularly beneficial in real-time monitoring and incident response scenarios.
 
-```sql
+```sql+postgres
 select
   *
 from
   prometheus_alert
 where
-  active_at > now() - interval '5 min'
+  active_at > now() - interval '5 min';
+```
+
+```sql+sqlite
+select
+  *
+from
+  prometheus_alert
+where
+  active_at > datetime('now', '-5 minutes');
 ```

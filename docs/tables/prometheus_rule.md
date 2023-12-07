@@ -16,20 +16,30 @@ The `prometheus_rule` table provides insights into rules within the Prometheus s
 ### List all rules
 Explore all the rules in your Prometheus setup, organized by group name and rule number. This can help you understand the structure and hierarchy of your rules for better management and troubleshooting.
 
-```sql
+```sql+postgres
 select
   *
 from
   prometheus_rule
 order by
   group_name,
-  group_rule_num
+  group_rule_num;
+```
+
+```sql+sqlite
+select
+  *
+from
+  prometheus_rule
+order by
+  group_name,
+  group_rule_num;
 ```
 
 ### Rules with a labeled severity of high
 This query is used to identify any rules within the Prometheus system that have been marked with a high severity label. This could be useful in prioritizing responses to system alerts or issues, by focusing on the most critical rules first.
 
-```sql
+```sql+postgres
 select
   name,
   labels,
@@ -37,13 +47,24 @@ select
 from
   prometheus_rule
 where
-  labels ->> 'severity' = 'high'
+  labels ->> 'severity' = 'high';
+```
+
+```sql+sqlite
+select
+  name,
+  labels,
+  state
+from
+  prometheus_rule
+where
+  json_extract(labels, '$.severity') = 'high';
 ```
 
 ### Rules that are firing
 Explore which rules are currently active or 'firing' within your Prometheus monitoring system. This can aid in identifying potential issues or anomalies in your network or system that require immediate attention.
 
-```sql
+```sql+postgres
 select
   name,
   labels,
@@ -51,13 +72,24 @@ select
 from
   prometheus_rule
 where
-  state = 'firing'
+  state = 'firing';
+```
+
+```sql+sqlite
+select
+  name,
+  labels,
+  state
+from
+  prometheus_rule
+where
+  state = 'firing';
 ```
 
 ### Slow running rules with evaluation time > 1 sec
 Analyze your system's performance by pinpointing rules that are running slowly, taking more than one second for evaluation. This can help you identify potential bottlenecks or areas for optimization to improve overall system efficiency.
 
-```sql
+```sql+postgres
 select
   name,
   labels,
@@ -65,5 +97,16 @@ select
 from
   prometheus_rule
 where
-  evaluation_time > 1
+  evaluation_time > 1;
+```
+
+```sql+sqlite
+select
+  name,
+  labels,
+  state
+from
+  prometheus_rule
+where
+  evaluation_time > 1;
 ```

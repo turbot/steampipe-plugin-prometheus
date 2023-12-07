@@ -16,45 +16,74 @@ The `prometheus_series` table provides insights into time series data within Pro
 ### List all current prometheus_http_requests_total series
 Explore the current series of Prometheus HTTP requests to understand the volume and nature of web traffic. This can be useful in monitoring server performance and identifying potential issues or areas for optimization.
 
-```sql
+```sql+postgres
 select
   *
 from
   prometheus_series
 where
-  query = 'prometheus_http_requests_total'
+  query = 'prometheus_http_requests_total';
+```
+
+```sql+sqlite
+select
+  *
+from
+  prometheus_series
+where
+  query = 'prometheus_http_requests_total';
 ```
 
 ### List all prometheus_http_requests_total series present 24 hours ago
 Explore the total number of HTTP requests made to your Prometheus server 24 hours ago. This can help in identifying any unusual spikes or drops in traffic, assisting in network monitoring and troubleshooting.
 
-```sql
+```sql+postgres
 select
   *
 from
   prometheus_series
 where
   query = 'prometheus_http_requests_total'
-  and timestamp = now() - interval '24 hrs'
+  and timestamp = now() - interval '24 hrs';
+```
+
+```sql+sqlite
+select
+  *
+from
+  prometheus_series
+where
+  query = 'prometheus_http_requests_total'
+  and timestamp = datetime('now', '-24 hours');
 ```
 
 ### List all prometheus_http_requests_total series for /metrics present 24 hours ago
 Analyze the settings to understand the total number of HTTP requests made to the '/metrics' handler in Prometheus, exactly 24 hours ago. This can help in monitoring traffic patterns and identifying possible issues or anomalies in request volume.
 
-```sql
+```sql+postgres
 select
   *
 from
   prometheus_series
 where
   query = 'prometheus_http_requests_total{handler="/metrics"}'
-  and timestamp = now() - interval '24 hrs'
+  and timestamp = now() - interval '24 hrs';
+```
+
+```sql+sqlite
+select
+  *
+from
+  prometheus_series
+where
+  query = 'prometheus_http_requests_total{handler="/metrics"}'
+  and timestamp = datetime('now','-24 hours');
 ```
 
 ### List all prometheus_http_requests_total series on 31st Oct 2021
 Explore the total number of HTTP requests recorded by Prometheus on October 31st, 2021. This can help in analyzing the web traffic patterns and server load on that specific day.
 
-```sql
+```sql+postgres
 select
   *
 from
@@ -62,5 +91,16 @@ from
 where
   query = 'prometheus_http_requests_total'
   and timestamp > '2021-10-31'
-  and timestamp < '2021-11-01'
+  and timestamp < '2021-11-01';
+```
+
+```sql+sqlite
+select
+  *
+from
+  prometheus_series
+where
+  query = 'prometheus_http_requests_total'
+  and timestamp > '2021-10-31'
+  and timestamp < '2021-11-01';
 ```

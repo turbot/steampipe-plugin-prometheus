@@ -16,17 +16,24 @@ The `prometheus_target` table provides insights into individual nodes or endpoin
 ### List all targets
 Discover all the monitoring targets in your Prometheus setup, helping you gain a comprehensive view of what metrics are being tracked across your systems. This can be particularly useful for auditing or troubleshooting purposes.
 
-```sql
+```sql+postgres
 select
   *
 from
-  prometheus_target
+  prometheus_target;
+```
+
+```sql+sqlite
+select
+  *
+from
+  prometheus_target;
 ```
 
 ### Targets that are not up
 Explore which targets in your Prometheus monitoring system are not currently operational. This can help you quickly identify and address any potential issues, improving system performance and reliability.
 
-```sql
+```sql+postgres
 select
   scrape_pool,
   scrape_url,
@@ -36,13 +43,26 @@ select
 from
   prometheus_target
 where
-  health != 'up'
+  health != 'up';
+```
+
+```sql+sqlite
+select
+  scrape_pool,
+  scrape_url,
+  health,
+  last_scrape,
+  last_error
+from
+  prometheus_target
+where
+  health != 'up';
 ```
 
 ### Targets whose last scrape was more than 24 hrs ago
 Identify instances where targets haven't been scanned in the last 24 hours. This is useful for maintaining up-to-date data and ensuring the health of your system.
 
-```sql
+```sql+postgres
 select
   scrape_pool,
   scrape_url,
@@ -52,5 +72,18 @@ select
 from
   prometheus_target
 where
-  last_scrape < now() - interval '24 hrs'
+  last_scrape < now() - interval '24 hrs';
+```
+
+```sql+sqlite
+select
+  scrape_pool,
+  scrape_url,
+  health,
+  last_scrape,
+  last_error
+from
+  prometheus_target
+where
+  datetime(last_scrape) < datetime('now', '-24 hours');
 ```
