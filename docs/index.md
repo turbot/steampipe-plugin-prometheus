@@ -8,6 +8,7 @@ short_name: "prometheus"
 description: "Steampipe plugin to query metrics, labels, alerts and more from Prometheus."
 og_description: "Query Prometheus with SQL! Open source CLI. No DB required."
 og_image: "/images/plugins/turbot/prometheus-social-graphic.png"
+engines: ["steampipe", "sqlite", "postgres", "export"]
 ---
 
 # Prometheus + Steampipe
