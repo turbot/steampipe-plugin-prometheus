@@ -99,7 +99,4 @@ connection "prometheus" {
 - `address` - HTTP address of your prometheus server. Can also be set with the PROMETHEUS_URL environment variable.
 - `metrics` - List of metric expressions to be matched against while creating dynamic metric tables.
 
-## Get involved
 
-- Open source: https://github.com/turbot/steampipe-plugin-prometheus
-- Community: [Join #steampipe on Slack →](https://turbot.com/community/join)
