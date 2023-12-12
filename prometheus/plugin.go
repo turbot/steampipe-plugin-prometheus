@@ -17,7 +17,6 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 		Name: "steampipe-plugin-prometheus",
 		ConnectionConfigSchema: &plugin.ConnectionConfigSchema{
 			NewInstance: ConfigInstance,
-			Schema:      ConfigSchema,
 		},
 		DefaultTransform: transform.FromGo(),
 		SchemaMode:   		plugin.SchemaModeDynamic,
