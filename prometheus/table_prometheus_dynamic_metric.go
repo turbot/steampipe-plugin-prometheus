@@ -24,7 +24,7 @@ func tableDynamicMetric(ctx context.Context, p *plugin.TableMapData) *plugin.Tab
 	}
 
 	// Get the query for the metric (required)
-	metricName := ctx.Value("metric_name").(string)
+	metricName := ctx.Value(ctxKey("metric_name")).(string)
 	metricNameBytes, _ := json.Marshal(metricName)
 	q := fmt.Sprintf(`{__name__=%s}`, string(metricNameBytes))
 
