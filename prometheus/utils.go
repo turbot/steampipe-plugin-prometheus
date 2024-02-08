@@ -43,17 +43,19 @@ func connectRaw(ctx context.Context, cc *connection.ConnectionCache, c *plugin.C
 		Address: address,
 	})
 
-	conn := v1.NewAPI(client)
-
 	if err != nil {
-		return conn, err
+		plugin.Logger(ctx).Error("connectRaw", "client connection error", err)
+		return nil, err
 	}
+
+	conn := v1.NewAPI(client)
 
 	// Save to cache
 	err = cc.Set(ctx, cacheKey, conn)
 
 	if err != nil {
 		plugin.Logger(ctx).Error("connectRaw", "cache-set", err)
+		return conn, err
 	}
 
 	return conn, nil

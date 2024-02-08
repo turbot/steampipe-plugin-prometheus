@@ -10,7 +10,7 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
-type ctxKey struct{}
+type ctxKey string
 
 func Plugin(ctx context.Context) *plugin.Plugin {
 	p := &plugin.Plugin{
@@ -19,7 +19,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			NewInstance: ConfigInstance,
 		},
 		DefaultTransform: transform.FromGo(),
-		SchemaMode:   		plugin.SchemaModeDynamic,
+		SchemaMode:       plugin.SchemaModeDynamic,
 		TableMapFunc:     pluginTableDefinitions,
 	}
 	return p
@@ -38,15 +38,22 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.TableMapData) (map[st
 		"prometheus_target":     tablePrometheusTarget(ctx),
 	}
 
+	// Get list of metrics to create tables for from config
+	prometheusConfig := GetConfig(p.Connection)
+	  if prometheusConfig.Metrics == nil {
+		return tables, nil
+	}
 
 	// Search for metrics to create as tables
 	metricNames, err := metricNameList(ctx, p)
+
 	if err != nil {
-		return nil, err
+		// Return only the static tables when encountering an error
+		return tables, err
 	}
 
 	for _, i := range metricNames {
-		tableCtx := context.WithValue(ctx, ctxKey{}, i)
+		tableCtx := context.WithValue(ctx, ctxKey("metric_name"), i)
 		base := filepath.Base(i)
 		tableName := base[0 : len(base)-len(filepath.Ext(base))]
 		// Add the table if it does not already exist, ensuring standard tables win
@@ -56,7 +63,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.TableMapData) (map[st
 			plugin.Logger(ctx).Error("prometheus.pluginTableDefinitions", "table_already_exists", tableName)
 		}
 	}
-
+	
 	return tables, nil
 }
 
@@ -95,6 +102,5 @@ func metricNameList(ctx context.Context, p *plugin.TableMapData) ([]string, erro
 	for _, i := range warnings {
 		plugin.Logger(ctx).Error("prometheus.metricNameList", "warning", i)
 	}
-
 	return names, nil
 }
