@@ -1,3 +1,9 @@
+## v0.6.2 [2024-02-13]
+
+_Bug fixes_
+
+- Fixed the plugin initialization error by returning only the static tables when invalid config parameters were set for dynamic tables. [#39](https://github.com/turbot/steampipe-plugin-prometheus/pull/39)
+
 ## v0.6.1 [2023-12-12]
 
 _Bug fixes_
