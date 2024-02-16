@@ -2,13 +2,13 @@
 
 _Bug fixes_
 
-- Fixed the plugin initialization error by returning only the static tables when invalid config parameters were set for dynamic tables. [#39](https://github.com/turbot/steampipe-plugin-prometheus/pull/39)
+- Fixed the plugin initialization error by returning only the static tables when invalid config parameters were set for dynamic tables. ([#39](https://github.com/turbot/steampipe-plugin-prometheus/pull/39))
 
 ## v0.6.1 [2023-12-12]
 
 _Bug fixes_
 
-- Fixed the missing optional tag on the `Metrics` connection config parameter. [#36](https://github.com/turbot/steampipe-plugin-prometheus/pull/36)
+- Fixed the missing optional tag on the `Metrics` connection config parameter. ([#36](https://github.com/turbot/steampipe-plugin-prometheus/pull/36))
 
 ## v0.6.0 [2023-12-12]
 
