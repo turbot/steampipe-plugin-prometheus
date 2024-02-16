@@ -8,7 +8,7 @@ _Bug fixes_
 
 _Bug fixes_
 
-- Fixed the missing optional tag on the `Metrics` connection config parameter. [#36](https://github.com/turbot/steampipe-plugin-prometheus/pull/36)
+- Fixed the missing optional tag on the `Metrics` connection config parameter. ([#36](https://github.com/turbot/steampipe-plugin-prometheus/pull/36))
 
 ## v0.6.0 [2023-12-12]
 
