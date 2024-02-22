@@ -23,6 +23,8 @@ Configure the server address in `~/.steampipe/config/prometheus.spc`:
 connection "prometheus" {
   plugin  = "prometheus"
   address = "http://localhost:9090"
+  username = "optional_username"
+  password = "optional_password"
 }
 ```
 
