@@ -5,8 +5,10 @@ import (
 )
 
 type prometheusConfig struct {
-	Address *string  `hcl:"address"`
-	Metrics []string `hcl:"metrics,optional"`
+	Address  *string  `hcl:"address"`
+	Username *string  `hcl:"username,optional"`
+	Password *string  `hcl:"password,optional"`
+	Metrics  []string `hcl:"metrics,optional"`
 }
 
 func ConfigInstance() interface{} {
