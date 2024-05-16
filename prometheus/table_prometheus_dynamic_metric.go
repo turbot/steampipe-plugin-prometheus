@@ -17,7 +17,7 @@ import (
 
 func tableDynamicMetric(ctx context.Context, p *plugin.TableMapData) *plugin.Table {
 
-	conn, err := connectRaw(ctx, p.ConnectionCache, p.Connection)
+	conn, err := connectRaw(ctx, p.Connection)
 	if err != nil {
 		plugin.Logger(ctx).Error("prometheus_dynamic_metric.tableDynamicMetric", "connection_error", err)
 		return nil

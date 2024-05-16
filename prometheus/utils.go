@@ -7,24 +7,32 @@ import (
 	"github.com/prometheus/client_golang/api"
 	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
 
-	"github.com/turbot/steampipe-plugin-sdk/v5/connection"
+	"github.com/turbot/steampipe-plugin-sdk/v5/memoize"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
 
 func connect(ctx context.Context, d *plugin.QueryData) (v1.API, error) {
-	return connectRaw(ctx, d.ConnectionCache, d.Connection)
+	api, err := getConnectionMemoize(ctx, d, nil)
+	if err != nil {
+		return nil, err
+	}
+	return api.(v1.API), nil
 }
 
-func connectRaw(ctx context.Context, cc *connection.ConnectionCache, c *plugin.Connection) (v1.API, error) {
+var getConnectionMemoize = plugin.HydrateFunc(getConnectionUncached).Memoize(memoize.WithCacheKeyFunction(getConnectionCackeKey))
+
+func getConnectionUncached(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+return connectRaw(ctx, d.Connection)
+}
+
+func getConnectionCackeKey(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+	key := "connectPrometheus"
+	return key, nil
+}
+
+func connectRaw(ctx context.Context, c *plugin.Connection) (v1.API, error) {
 
 	var address string
-
-	// Load connection from cache, which preserves throttling protection etc
-	cacheKey := "prometheus"
-	if cachedData, ok := cc.Get(ctx, cacheKey); ok {
-		return cachedData.(v1.API), nil
-	}
-
 	// Prefer config settings
 	prometheusConfig := GetConfig(c)
 
@@ -49,9 +57,6 @@ func connectRaw(ctx context.Context, cc *connection.ConnectionCache, c *plugin.C
 	}
 
 	conn := v1.NewAPI(client)
-
-	// Save to cache
-	err = cc.Set(ctx, cacheKey, conn)
 
 	if err != nil {
 		plugin.Logger(ctx).Error("connectRaw", "cache-set", err)
