@@ -7,9 +7,9 @@ import (
 	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
 	"github.com/prometheus/common/model"
 
-	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v6/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v6/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v6/plugin/transform"
 )
 
 func tablePrometheusMetric(ctx context.Context) *plugin.Table {
@@ -67,12 +67,12 @@ func listMetric(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 				r.End = ts
 			}
 		}
-		stepSeconds := (r.End.Sub(r.Start) / 1000).Round(time.Second)
+		stepDuration := (r.End.Sub(r.Start) / 1000).Round(time.Second)
 		// Step has to be higher than 0 seconds
-		if stepSeconds < 1 {
-			stepSeconds = time.Second
+		if stepDuration < 1 {
+			stepDuration = time.Second
 		}
-		r.Step = stepSeconds
+		r.Step = stepDuration
 	} else {
 		isRange = false
 	}
@@ -181,12 +181,12 @@ func getStepSeconds(_ context.Context, d *transform.TransformData) (interface{},
 				end = ts
 			}
 		}
-		stepSeconds := (end.Sub(start) / 1000).Round(time.Second)
+		stepDuration := (end.Sub(start) / 1000).Round(time.Second)
 		// Step has to be higher than 0 seconds
-		if stepSeconds < 1 {
-			stepSeconds = time.Second
+		if stepDuration < 1 {
+			stepDuration = time.Second
 		}
-		step = int64(stepSeconds.Seconds())
+		step = int64(stepDuration.Seconds())
 	}
 
 	return step, nil
