@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v6/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v6/plugin/transform"
 )
 
 type ctxKey string
@@ -40,7 +40,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.TableMapData) (map[st
 
 	// Get list of metrics to create tables for from config
 	prometheusConfig := GetConfig(p.Connection)
-	  if prometheusConfig.Metrics == nil {
+	if prometheusConfig.Metrics == nil {
 		return tables, nil
 	}
 

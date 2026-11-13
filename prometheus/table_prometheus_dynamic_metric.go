@@ -10,9 +10,9 @@ import (
 	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
 	"github.com/prometheus/common/model"
 
-	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v6/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v6/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v6/plugin/transform"
 )
 
 func tableDynamicMetric(ctx context.Context, p *plugin.TableMapData) *plugin.Table {
@@ -125,12 +125,12 @@ func listMetricWithName(metricName string) func(ctx context.Context, d *plugin.Q
 					r.End = ts
 				}
 			}
-			stepSeconds := (r.End.Sub(r.Start) / 1000).Round(time.Second)
+			stepDuration := (r.End.Sub(r.Start) / 1000).Round(time.Second)
 			// Step has to be higher than 0 seconds
-			if stepSeconds < 1 {
-				stepSeconds = time.Second
+			if stepDuration < 1 {
+				stepDuration = time.Second
 			}
-			r.Step = stepSeconds
+			r.Step = stepDuration
 		} else {
 			isRange = false
 		}
